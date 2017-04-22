@@ -23,4 +23,6 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     # ex: /talk/1/
     url(r'^(?P<talk_id>[0-9]+)/$', views.talk, name='talk'),
+    url(r'^directory/$', views.directory, name='directory'),
+    url(r'^get-talk/$', views.get_talk, name='get-talk'),
 ]

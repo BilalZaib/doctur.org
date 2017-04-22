@@ -1,6 +1,5 @@
 {% load bootstrap3 %}
 {% load static %}
-{% bootstrap_messages %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,12 +12,16 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin - Bootstrap Admin Template</title>
+    <title>Doctur.org</title>
 
-	{% bootstrap_css %}
-    <link href="{% static "css/sb-admin.css" %}" rel="stylesheet">
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 
-    <link href="{% static "font-awesome/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link href="/static/css/modern-business.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -29,13 +32,18 @@
 
 </head>
 
-	<body>
-	
-			
-		{% include 'navigation.html' %}
-		{% block content %}{% endblock %}
-		{% bootstrap_javascript jquery=1 %}
-	
-	</body>
+<body>        
+    {% include 'front/navigation.html' %}
+    {% block content %}{% endblock %}
+    {% bootstrap_javascript jquery=1 %}
+        
+    <!-- Script to Activate the Carousel -->
+    <script>
+    $('.carousel').carousel({
+        interval: 5000 //changes the speed
+    })
+    </script>
+
+</body>
 
 </html>

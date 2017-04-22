@@ -1,0 +1,29 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+<div id="wrapper">
+	<div id="page-wrapper">
+
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3>Doctor Directory</h3>
+                </div>
+                <div class="col-lg-12">
+                    <ul>
+                        {% for user in user_list %}
+                        <li><a href="#" onclick="moveToTalk({{ user.id }})">{{ user.username }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

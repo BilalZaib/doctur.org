@@ -20,7 +20,10 @@ from . import views, settings
 from os import path
 
 urlpatterns = [
+    url(r'^dashboard/', include('dashboard.urls')),
     url(r'^talk/', include('talk.urls')),
     url(r'^robots.txt', views.robots),
     url(r'^admin/', admin.site.urls),
+    url(r'^account/', include('account.urls')),
+    url(r'^', include('front.urls')),
 ]
