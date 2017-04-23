@@ -2,6 +2,8 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 
+import json
+
 class Talk(models.Model):
     users = models.ManyToManyField(User)
 
@@ -13,7 +15,6 @@ class Talk(models.Model):
             x[0] for x in self.users.order_by('id').values_list('username')
         )
 
-
 class Message(models.Model):
     talk = models.ForeignKey(Talk, related_name='messages')
     user = models.ForeignKey(User)
@@ -21,4 +22,9 @@ class Message(models.Model):
     content = models.TextField()
 
     def __str__(self):
-        return '{0} at {1}'.format(self.user, self.timestamp)
+        return json.dumps({
+            "talk_id": self.talk.id,
+            "username": str(self.user.username),
+            "timestamp": self.timestamp.strftime("%B %d, %G, %I:%M %p").replace(" 0", " "),
+            "content": str(self.content)
+        })

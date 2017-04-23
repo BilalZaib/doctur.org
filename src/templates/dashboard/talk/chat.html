@@ -2,8 +2,12 @@
 
 {% block content %}
 
+<script src="/static/js/peer.js"></script>
+<script src="/static/js/chat-peer.js"></script>  
+<script src="/static/js/chat.js"></script>  
 <script>
 var user = '{{ user }}';
+var talk_id = {{ talk_id }};
 </script>
 
 <div class="hidden">
@@ -28,32 +32,69 @@ var user = '{{ user }}';
 	<div id="page-wrapper">
 
         <div class="container-fluid">
-
-            <div class="row chat-panel">
-                <div class="col-lg-12 well">
-                    <h3>{{ name }}</h3>
-                    <p>Online</p>
-                </div>
-                <hr />
-                <div class="col-lg-12">
-                    <div id="chat-box">
-                        <p id="chat-default" class="center">No message to show.</p>
+            <div class="row">
+                <div class="col-lg-12 chat-head">
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <p><span id="name">{{ name }}</span> - <span id="status">Connecting...</span></p>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="btn btn-primary video-btn"  onclick="enable_video();">Video Enable</span>
+                        </div>
                     </div>
                 </div>
-                <hr />
-                <div class="col-lg-12 well">
-                    <form>
+            </div>
+            <div class="row">
+                <div class="col col-sm-12 chat-area">
+                    <div class="chat-panel">
+                        
                         <div class="row">
-                            <div class="col-lg-10">
-                                <div class="form-group">
-                                    <textarea class="form-control" rows=1 id="chat-area"></textarea>
-                                </div>     
-                            </div>
-                            <div class="col-lg-2 right">
-                                <button class="btn btn-primary">Submit</button>
+                            <div class="col-lg-12" id="chat-box">
+                                <p id="chat-default" class="center">
+                                {% if not chat %}
+                                    No message to show.
+                                {% else %}
+                                    {% for message in chat %}
+                                        {% if message.user.id == userid %}
+                                            <div class="row chat-msg right" id="current-user">
+                                                <div class="col col-lg-12">
+                                                    <p><span id="msg" class="msg right-border">{{ message.content }}</span></p>
+                                                    <p class="msg-info"><b id="name">{{ message.user.username }}</b> - <span id="date">{{ message.timestamp }}</span></p>
+                                                </div>                            
+                                            </div>
+                                        {% else %}
+                                            <div class="row chat-msg" id="other-user">
+                                                <div id="img" class="col col-lg-1 center">
+                                                    <img src="/static/img/male.png">
+                                                </div>
+                                                <div class="col col-lg-11">
+                                                    <p><span id="msg" class="msg left-border">{{ message.content }}</span></p>
+                                                    <p class="msg-info"><b id="name">{{ message.user.username }}</b> - <span id="date">{{ message.timestamp }}</span></p>
+                                                </div>                            
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif%}
+                                </p>
                             </div>
                         </div>
-                    </form>
+                        <div class="row">
+                            <div class="col-lg-12" style="padding: 0px; margin-top: 5px;">
+                                <form id="chat-form">
+                                    <div class="input-group">
+                                        <textarea placeholder="Enter your message here..." class="form-control custom-control" id="content" rows="3" style="resize:none"></textarea>
+                                        <span class="input-group-addon btn btn-primary" id="send">Send</span>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col video-area col-sm-12">
+                    <p>My ID: <span id="my-id">Loading...</span></p>
+                    <p>Their ID: <span id="my-id">Loading...</span></p>
+                    <video id="their-video" autoplay></video>
+                    <video id="my-video" muted="true" autoplay></video>     
                 </div>
             </div>
             
@@ -62,5 +103,6 @@ var user = '{{ user }}';
     </div>
 
 </div>
+
 
 {% endblock %}

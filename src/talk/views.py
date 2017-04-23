@@ -1,47 +1,57 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http.response import HttpResponse
 from django import forms
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
+from django.db.models import Count
+from django.contrib.auth.models import User
 
-from talk.models import User, Talk
+from talk.models import Talk, Message
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 
+@login_required
 def index(request):
-    return render(request, 'talk/index.html', {})
-    
-def talk(request, talk_id):
-    t = Talk.objects.get(pk=talk_id)
-    name = ",".join(x.username for x in t.users.all().exclude(username=request.session.get('username')))
-    if t:
-        context = {
-            "name": name,
-            "user": request.session.get('username')   
-        }
-        return render(request, 'talk/chat.html', context)
-    return redirect("/talk/")
+    return render(request, 'dashboard/talk/index.html', {})
 
-def directory(request):
+@login_required
+def talk(request, talk_id):    
     try:
-        u = User.objects.get(pk=int(request.GET['pk']));
-        request.session['username'] = u.username
-        request.session['userid'] = u.id
-    except Exception:
-        pass
+        t = Talk.objects.get(pk=talk_id)
 
+        # Can current user use this talk, If now throw exception
+        if not Talk.objects.filter(users__pk=request.user.id):
+            return redirect("/talk/directory")
+
+        name = ",".join(x.username for x in t.users.all().exclude(username=request.user.username))
+        context = {
+            "talk_id": talk_id,
+            "name": name,
+            "userid": request.user.id,
+            "user": request.user.username,   
+            "chat": Message.objects.filter(talk__id=talk_id).order_by('id')  
+        }
+        return render(request, 'dashboard/talk/chat.html', context)
+    except ObjectDoesNotExist:
+        return redirect("/talk/directory")
+
+@login_required
+def directory(request):
     context = {
-        "user_list": User.objects.filter(~Q(pk=request.session['userid'])) 
+        "user_list": User.objects.filter(~Q(pk=request.user.id)) 
     }
-    print (context);
-    return render(request, 'talk/directory.html', context)
+    return render(request, 'dashboard/talk/directory.html', context)
 
+@login_required
 def get_talk(request):
 
     if 'users' not in request.GET:
         return HttpResponse("Invalid Request");
 
-    users = request.GET.get("users").split(",") + [request.session.get('userid')]
-    t = Talk.objects.filter(users__pk__in=users);
+    users = request.GET.get("users").split(",") + [request.user.id]
+    
+    t = Talk.objects.filter(users__pk__in=users).annotate(num_tags=Count('users')).filter(num_tags=2)
     if t:
         return HttpResponse(t[0].id)
 
@@ -51,5 +61,5 @@ def get_talk(request):
     for user in users:
         if user != '':
             t.users.add(user)
-
+    t.save()
     return HttpResponse(t.id)

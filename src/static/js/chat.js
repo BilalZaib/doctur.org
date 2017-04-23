@@ -1,7 +1,9 @@
-var other_user = $("#other-user");
-var current_user = $("#current-user");
+var socket = null;
 
 function setMessageElement(pic, msg, name, date) {
+	var other_user = $("#other-user");
+	var current_user = $("#current-user");
+
 	if (pic != null) {
 		var elem = other_user.clone();
 		if (pic == true)
@@ -10,7 +12,6 @@ function setMessageElement(pic, msg, name, date) {
 			elem.find("#pic").attr("src",pic);
 	}
 	else {
-
 		var elem = current_user.clone();
 	}
 	
@@ -22,38 +23,123 @@ function setMessageElement(pic, msg, name, date) {
 
 	$("#chat-box").append(elem);
 
-	$("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+	if (pic == null)
+		$("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
 }
+
+
 
 function moveToTalk(id) {
 	$.get("/talk/get-talk", {users: id}, function(data, status){
-    	window.location.href = "/talk/" + id;
+		console.log(data);
+    	window.location.href = "/talk/" + data;
     });
 }
 
-// Set first parameter to true for default image.
+function init_websocket() {
+	socket = new WebSocket("ws://" + window.location.host + "/talk/");
+
+	socket.onmessage = function(e) {
+		data = JSON.parse(e.data);
+	    if (data.username == user)
+		    setMessageElement(null, data.content, data.username, data.timestamp);
+		else
+		    setMessageElement(true, data.content, data.username, data.timestamp);
+	}
+
+	socket.onopen = function() {
+	    $("#status").text("Connected");
+	    $("#status").css("color", "green");
+	}
+	
+	socket.onclose = function() {
+		$("#status").text("Disconnected");
+	    $("#status").css("color", "red");
+
+	}
+
+	if (socket.readyState == WebSocket.OPEN) socket.onopen();
+}
+
+function send_message(e) {
+	var content = $("#content").val();
+	$("#content").val("");
+	if (content) {
+		socket.send(JSON.stringify({type: "send_message", content: content, talk_id: talk_id}))
+	}
+}
+
+video_status = false;
+
+function enable_video() {
+	
+	if (video_status == false) {
+		$(".chat-area").removeClass("col-sm-12");
+		$(".video-area").removeClass("col-sm-12");
+		
+		$(".chat-area").addClass("col-sm-6");
+		$(".video-area").addClass("col-sm-6");
+		
+		$(".video-area").show(1000);
+		
+		$(".video-btn").text("Disable Video");
+		$(".video-btn").removeClass("btn-primary");
+		$(".video-btn").addClass("btn-danger");
+		
+		video_status = true;
+
+		show_my_video();
+		init_peer();
+	}
+
+	else {
+		$(".chat-area").removeClass("col-sm-6");
+		$(".video-area").removeClass("col-sm-6");
+		
+		$(".chat-area").addClass("col-sm-12");
+		$(".video-area").addClass("col-sm-12");
+		
+		$(".video-area").hide();
+
+		$(".video-btn").text("Enable Video");
+		$(".video-btn").addClass("btn-primary");
+		$(".video-btn").removeClass("btn-danger");
+		
+		video_status = false;
+
+		hide_my_video();
+	}
+	
+}
 
 $(document).ready(function() {
-	setMessageElement(null, "How are you?", "Owais Chishti", Date());
-	setMessageElement(true, "I am fine.", "Bilal Zaib", Date());
+	init_websocket();
+
+	setInterval(function() {
+		if (socket.readyState == WebSocket.CLOSED) {
+			$("#status").text("Reconnecting...");
+		    $("#status").css("color", "blue");
+			init_websocket();
+		}
+	}, 3000);
+
+	$("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+
+	$("#content").keypress(function(ev) {
+	    console.log("Content changed.");
+	    var keycode = (ev.keyCode ? ev.keyCode : ev.which);
+        if (keycode == '13') {
+        	send_message();
+	        $("#content").val("");
+        }
+	});
+
+
+	$("#send").click(send_message);
+
+	//setMessageElement(null, "How are you?", "Owais Chishti", Date());
+	//setMessageElement(true, "I am fine.", "Bilal Zaib", Date());
 });
 
 
-// Note that the path doesn't matter for routing; any WebSocket
-// connection gets bumped over to WebSocket consumers
 
-socket = new WebSocket("ws://" + window.location.host + "/talk/");
-
-socket.onmessage = function(e) {
-    console.log(e.data);
-}
-
-socket.onopen = function() {
-    socket.send({
-    	'type': 'login',
-    	'user': user
-    });
-}
-
-// Call onopen directly if socket is already open
-if (socket.readyState == WebSocket.OPEN) socket.onopen();

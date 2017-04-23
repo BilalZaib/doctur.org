@@ -31,11 +31,10 @@
 
 	<body>
 	
-			
+		{% bootstrap_javascript jquery=1 %}	
 		{% include 'dashboard/navigation.html' %}
 		{% block content %}{% endblock %}
-		{% bootstrap_javascript jquery=1 %}
-        <script src="/static/js/chat.js"></script>	
+		
 	</body>
 
 </html>
