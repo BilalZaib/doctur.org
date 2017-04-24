@@ -21,6 +21,14 @@ class Message(models.Model):
     timestamp = models.DateTimeField(db_index=True, default=timezone.now)
     content = models.TextField()
 
+    def get_dict(self) :
+        return {
+            "talk_id": self.talk.id,
+            "username": str(self.user.username),
+            "timestamp": self.timestamp.strftime("%B %d, %G, %I:%M %p").replace(" 0", " "),
+            "content": str(self.content)
+        }
+
     def __str__(self):
         return json.dumps({
             "talk_id": self.talk.id,

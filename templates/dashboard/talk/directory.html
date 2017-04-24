@@ -1,7 +1,14 @@
 {% extends 'dashboard/base.html' %}
 
 {% block content %}
-
+<script>
+function moveToTalk(id) {
+    $.get("/talk/get-talk", {users: id}, function(data, status){
+        console.log(data);
+        window.location.href = "/talk/" + data;
+    });
+}
+</script>
 <div id="wrapper">
 	<div id="page-wrapper">
 
