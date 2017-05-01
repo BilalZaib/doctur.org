@@ -1,0 +1,21 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+<div id="wrapper">
+	<div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+				  <h1>Edit Profile</h1>
+				  <form method="POST">
+				     {% csrf_token %}
+				     {{ form.as_p }}
+                 <button type="submit">Save</button>
+                 </form>
+			</div>
+  		</div>
+  	</div>
+</div>
+
+
+{% endblock %}

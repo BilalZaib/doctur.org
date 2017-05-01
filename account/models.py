@@ -11,7 +11,9 @@ class DoctorProfile(models.Model):
     address = models.CharField(max_length=30, blank=True, help_text="Complete Adress")
     birth_date = models.DateField(null=True, blank=True,help_text='Required. Format: YYYY-MM-DD')
     email_confirmed = models.BooleanField(default=False)
-    avatar = models.ImageField('profile picture', upload_to='static/media/images/avatars/', null=True, blank=True)
+    avatar = models.ImageField('profile picture', upload_to='static/media/profile_imgs', null=True, blank=True)
+    def __str__(self):
+        return self.user.username
 
 
 class PatientProfile(models.Model):
@@ -20,6 +22,8 @@ class PatientProfile(models.Model):
     address = models.CharField(max_length=30, blank=True, help_text="Complete Adress")
     birth_date = models.DateField(null=True, blank=True,help_text='Required. Format: YYYY-MM-DD')
     email_confirmed = models.BooleanField(default=False)
-    avatar = models.ImageField('profile picture', upload_to='static/media/images/avatars/', null=True, blank=True)
+    avatar = models.ImageField('profile picture', upload_to='static/media/profile_imgs', null=True, blank=True)
+    def __str__(self):
+        return self.user.username
 
 

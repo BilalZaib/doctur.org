@@ -15,7 +15,7 @@ class SignUpForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('first_name','last_name', 'username', 'email', 'ARE_YOU', 'password1', 'password2', )
+        fields = ('username', 'first_name', 'last_name',  'email', 'ARE_YOU', 'password1', 'password2', )
 
 
 class DoctorProfileForm(forms.ModelForm):
