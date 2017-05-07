@@ -77,13 +77,13 @@ def activate(request, uidb64, token):
 
 def dp(request,u):
     if request.method == 'POST':
-        form = DoctorProfileForm(request.POST)
+        form = DoctorProfileForm(request.POST,request.FILES)
         if form.is_valid():
             dp = DoctorProfile.objects.get(user=u)
             u.refresh_from_db()
-            #u.doctor.avatar = form.clean_avatar()
+            dp.avatar = request.FILES.get('avatar')
             dp.birth_date = form.cleaned_data.get('birth_date')
-            dp.doctor.address = form.cleaned_data.get('address')
+            dp.address = form.cleaned_data.get('address')
             dp.save()
             return redirect('/dashboard')
     else:
@@ -92,15 +92,16 @@ def dp(request,u):
 
 def pp(request,u):
     if request.method == 'POST':
-        form = PatientProfileForm(request.POST)
+        form = PatientProfileForm(request.POST,request.FILES)
         if form.is_valid():
             pp = PatientProfile.objects.get(user=u)
             u.refresh_from_db()
-            #u.patient.avatar = form.clean_avatar()
+            pp.avatar = request.FILES.get('avatar')
             pp.birth_date = form.cleaned_data.get('birth_date')
             pp.address = form.cleaned_data.get('address')
             pp.disease = form.cleaned_data.get('disease')
             pp.save()
+
             return redirect('/dashboard')
     else:
         form = PatientProfileForm()
