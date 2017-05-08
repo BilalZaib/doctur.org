@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load bootstrap3 %}
 
 {% block content %}
 
@@ -7,14 +8,16 @@
         <div class="container-fluid">
             <div class="row">
 				  <div class="container">
-					<h2>Profile</h2>
-					<img src = "{{ user.doctor.getimg }}" width = "240"></img>
-					<p>User Name : {{user.username}}</p>
-					<p>Full Name :{{user.get_full_name}}</p>
-					<p>Email : {{user.email}}</p>
-					<p>You are from {{ user.doctor.address }}</p>
-					<p>Your Birth Date : {{ user.doctor.birth_date }}</p>
+					<div class="col col-sm-4">
+						<h2>Profile</h2>
+						<img src = "{{ user.doctor.getimg }}" width = "240"></img>
+						<p>User Name : {{user.username}}</p>
+						<p>Full Name :{{user.get_full_name}}</p>
+						<p>Email : {{user.email}}</p>
+						<p>You are from {{ user.doctor.address }}</p>
+						<p>Your Birth Date : {{ user.doctor.birth_date }}</p>
 				  </div>
+				</div>
 			</div>
   		</div>
   	</div>

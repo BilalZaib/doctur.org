@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm,UserChangeForm
 from django.contrib.auth.models import User
 from django.core.files.images import get_image_dimensions
 from .models import DoctorProfile,PatientProfile
@@ -15,81 +15,29 @@ class SignUpForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name',  'email', 'ARE_YOU', 'password1', 'password2', )
-
+        fields = ('first_name', 'last_name', 'username',  'email', 'ARE_YOU', 'password1', 'password2', )
 
 class DoctorProfileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(DoctorProfileForm, self).__init__(*args, **kwargs)
+        if self.instance:
+            self.fields["avatar"].initial = self.instance.avatar
+            self.fields["birth_date"].initial = self.instance.birth_date
+            self.fields["address"].initial = self.instance.address
+            self.fields["bio"].initial = self.instance.bio
     class Meta:
         model = DoctorProfile
-        fields = ['avatar', 'birth_date', 'address']
+        fields = ['avatar', 'birth_date', 'address','bio']
 
-     # def clean_avatar(self):
-     #     avatar = self.cleaned_data['avatar']
-     #
-     #     try:
-     #         w, h = get_image_dimensions(avatar)
-     #
-     #         #validate dimensions
-     #         max_width = max_height = 100
-     #         if w > max_width or h > max_height:
-     #             raise forms.ValidationError(
-     #                 u'Please use an image that is '
-     #                  '%s x %s pixels or smaller.' % (max_width, max_height))
-     #
-     #         #validate content type
-     #         main, sub = avatar.content_type.split('/')
-     #         if not (main == 'image' and sub in ['jpeg', 'pjpeg', 'gif', 'png']):
-     #             raise forms.ValidationError(u'Please use a JPEG, '
-     #                 'GIF or PNG image.')
-     #
-     #         #validate file size
-     #         if len(avatar) > (20 * 1024):
-     #             raise forms.ValidationError(
-     #                 u'Avatar file size may not exceed 20k.')
-     #
-     #     except AttributeError:
-     #         """
-     #         Handles case when we are updating the user profile
-     #         and do not supply a new avatar
-     #         """
-     #         pass
-     #
-     #     return avatar
 
 class PatientProfileForm(forms.ModelForm):
     class Meta:
         model = PatientProfile
         fields = ['avatar', 'birth_date', 'address', 'disease']
 
-     # def clean_avatar(self):
-     #     avatar = self.cleaned_data['avatar']
-     #
-     #     try:
-     #         w, h = get_image_dimensions(avatar)
-     #
-     #         #validate dimensions
-     #         max_width = max_height = 100
-     #         if w > max_width or h > max_height:
-     #             raise forms.ValidationError(
-     #                 u'Please use an image that is '
-     #                  '%s x %s pixels or smaller.' % (max_width, max_height))
-     #
-     #         #validate content type
-     #         main, sub = avatar.content_type.split('/')
-     #         if not (main == 'image' and sub in ['jpeg', 'pjpeg', 'gif', 'png']):
-     #             raise forms.ValidationError(u'Please use a JPEG, '
-     #                 'GIF or PNG image.')
-     #
-     #         #validate file size
-     #         if len(avatar) > (20 * 1024):
-     #             raise forms.ValidationError(
-     #                 u'Avatar file size may not exceed 20k.')
-     #
-     #     except AttributeError:
-     #         """
-     #         Handles case when we are updating the user profile
-     #         and do not supply a new avatar
-     #         """
-     #         pass
-     #
-     #     return avatar
+class EditProfileForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name','email']
+

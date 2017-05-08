@@ -2,12 +2,15 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,render_to_response
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 
-from .forms import SignUpForm,DoctorProfileForm,PatientProfileForm
+from .forms import *
 from .tokens import account_activation_token
 from .models import DoctorProfile,PatientProfile
 
@@ -106,3 +109,71 @@ def pp(request,u):
     else:
         form = PatientProfileForm()
     return render(request,'account/patientProfile.html', {'form': form})
+
+#After login
+@login_required
+def profile(request):
+    user = request.user
+    if hasattr(user, 'patient'):
+        return render(request, 'dashboard/pat_profile.html')
+    elif hasattr(user, 'doctor'):
+        return render(request, 'dashboard/doc_profile.html')
+
+@login_required
+def setting(request):
+    return render(request, 'dashboard/setting.html')
+
+@login_required
+def edit_profile(request):
+    user = request.user
+    if hasattr(user, 'patient'):
+        return pat_profile(request,user)
+    elif hasattr(user, 'doctor'):
+        return doc_profile(request,user)
+
+def doc_profile(request,user):
+    dp = DoctorProfile(user = user)
+    data = {'avatar':dp.avatar, 'birth_date':dp.birth_date, 'address':dp.address, 'bio':dp.bio}
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST or None, instance=request.user)
+        form1 = DoctorProfileForm(request.POST, request.FILES, instance=dp)
+        if form.is_valid() and form1.is_valid():
+            form.save()
+            form1.save()
+            return render(request, 'dashboard/doc_profile.html')
+    else:
+        form = EditProfileForm(request.POST or None,instance = request.user)
+        form1 = DoctorProfileForm(request.POST, request.FILES, instance=dp)
+    return render(request, "dashboard/edit_profile.html", {'form': form,'form1':form1})
+
+def pat_profile(request,user):
+    pp = PatientProfile(user = user)
+    data = {'avatar':pp.avatar, 'birth_date':pp.birth_date, 'address':pp.address, 'disease':pp.disease}
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST or None, instance=request.user)
+        form1 = PatientProfileForm(request.POST, request.FILES, instance=pp)
+        if form.is_valid() and form1.is_valid():
+            form.save()
+            form1.save()
+            return render(request, 'dashboard/pat_profile.html')
+    else:
+        form = EditProfileForm(request.POST or None,instance = request.user)
+        form1 = PatientProfileForm(request.POST, request.FILES, instance=pp)
+    return render(request, "dashboard/edit_profile.html", {'form': form,'form1':form1})
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('/dashboard')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'account/change_password.html', {
+        'form': form
+    })
