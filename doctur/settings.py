@@ -24,7 +24,7 @@ SECRET_KEY = 'fb#if-%e!j&1ykrnmt%^jis*=n9)v_l#8@a*=#a!96f#j-a8q5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.201']
 
 
 # Application definition
