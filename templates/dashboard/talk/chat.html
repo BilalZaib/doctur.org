@@ -2,8 +2,8 @@
 
 {% block content %}
 
-<script src="/static/js/peer.js"></script>
-<script src="/static/js/chat-peer.js"></script>  
+<script src="/static/js/socket.io.js"></script>
+<script src="/static/js/easyrtc.js"></script>
 <script src="/static/js/chat.js"></script>  
 <script>
 var user = '{{ user }}';
@@ -93,8 +93,10 @@ var talk_id = {{ talk_id }};
                 <div class="col video-area col-sm-12">
                     <p>My ID: <span id="my-id">Loading...</span></p>
                     <p>Their ID: <span id="their-id">Loading...</span></p>
-                    <video id="their-video" autoplay></video>
-                    <video id="my-video" muted="true" autoplay></video>     
+
+                    <video autoplay="autoplay" id="my-video" muted="muted" volume="0" ></video>
+                    <video autoplay="autoplay" id="their-video"></video>
+
                 </div>
             </div>
             

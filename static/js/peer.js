@@ -1,10 +1,10 @@
 /*! peerjs build:0.3.13, development. Copyright(c) 2013 Michelle Bu <michelle@michellebu.com> */(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports.RTCSessionDescription = window.RTCSessionDescription ||
-	window.mozRTCSessionDescription;
+  window.mozRTCSessionDescription;
 module.exports.RTCPeerConnection = window.RTCPeerConnection ||
-	window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+  window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
 module.exports.RTCIceCandidate = window.RTCIceCandidate ||
-	window.mozRTCIceCandidate;
+  window.mozRTCIceCandidate;
 
 },{}],2:[function(require,module,exports){
 var util = require('./util');
@@ -1639,7 +1639,7 @@ var util = {
     var timeouts = [];
     var messageName = 'zero-timeout-message';
 
-    // Like setTimeout, but only takes a function argument.	 There's
+    // Like setTimeout, but only takes a function argument.  There's
     // no time argument (always zero) and no arguments (you have to
     // use a closure).
     function setZeroTimeoutPostMessage(fn) {
@@ -2882,13 +2882,13 @@ var util = {
     var timeouts = [];
     var messageName = 'zero-timeout-message';
 
-    // Like setTimeout, but only takes a function argument.	 There's
+    // Like setTimeout, but only takes a function argument.  There's
     // no time argument (always zero) and no arguments (you have to
     // use a closure).
     function setZeroTimeoutPostMessage(fn) {
       timeouts.push(fn);
       global.postMessage(messageName, '*');
-    }		
+    }   
 
     function handleMessage(event) {
       if (event.source == global && event.data == messageName) {

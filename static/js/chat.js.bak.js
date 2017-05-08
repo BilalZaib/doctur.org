@@ -1,15 +1,11 @@
-var selfEasyrtcid = "";
-easyrtc.setSocketUrl("//192.168.0.201:7881");
-
+var mediaStream = null;
+var peer = null;
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 var socket = null;
 var video_status = false;
-var myid = null;
-var theirid = null;
-
-var i_am_caller = true;
-
-var room = '_' + Math.random().toString(36).substr(2, 32);
-console.log ("Room = " + room);
+var my_peerid = null;
+var their_peerid = null;
+var peer_api_key = 's1qck2af39vpwrk9';
 
 function setMessageElement(pic, msg, name, date) {
 	var other_user = $("#other-user");
@@ -50,10 +46,14 @@ function init_websocket() {
 			    setMessageElement(true, data.content, data.username, data.timestamp);
 		}
 		else if (data.type == "start_video_call") {
-			console.log("Request received for call")
-			i_am_caller = false;
-			room = data.peerid;
-			enable_video();
+			their_id = data.peerid;
+			$("#their-id").html(data.peerid);
+			
+			if (peer == null) {
+				enable_video();
+			}
+
+			start_call(their_id)
 		}
 	}
 
@@ -95,7 +95,8 @@ function enable_video() {
 		
 		video_status = true;
 
-		connect();
+		show_my_video();
+		init_peer();
 	}
 
 	else {
@@ -146,51 +147,94 @@ $(document).ready(function() {
 	//setMessageElement(true, "I am fine.", "Bilal Zaib", Date());
 });
 
-function hide_my_video() {}
 
-function connect() {
-    easyrtc.joinRoom(room);
-    console.log(room);
-    easyrtc.setVideoDims(640,480);
-    easyrtc.setRoomOccupantListener(convertListToButtons);
-    easyrtc.easyApp("easyrtc.audioVideoSimple", "my-video", ["their-video"], loginSuccess, loginFailure);
-}
-
-
-function convertListToButtons (roomName, data, isPrimary) {
-	console.log(data);
-    for(var easyrtcid in data) {
-		console.log ("Other is connected");
-		console.log(easyrtcid);
-		their_id = easyrtc.idToName(easyrtcid)
-		console.log(their_id);
-		$("#their-id").html(their_id);
-		performCall(easyrtcid);
+function init_peer() {
+	console.log("Peer intialized");
+    if (peer != null) return;
+    else {
+    	socket.send(JSON.stringify({type: "start_video_call", content: my_peerid, talk_id: talk_id}))        
 	}
+	
+    peer = new Peer({
+        key: peer_api_key,
+        debug: 3
+    });
+
+    peer.on('open', function() {
+        $('#my-id').text(peer.id);
+		my_peerid = peer.id;
+		socket.send(JSON.stringify({type: "start_video_call", content: peer.id, talk_id: talk_id}))        
+    });
+
+    // Receiving a call
+    peer.on('call', function(call) {
+        console.log("called received");
+        console.log(call);
+        // Answer the call automatically (instead of prompting user) for demo purposes
+        call.answer(window.localStream);
+        step3(call);
+    });
+    peer.on('error', function(err) {
+        alert(err.message);
+    });
 }
 
+function start_call (their_id) {
+    // Initiate a call!
+    var call = peer.call(their_id, window.localStream);
 
-function performCall(otherEasyrtcid) {
-    easyrtc.hangupAll();
-
-    var successCB = function() {};
-    var failureCB = function() {};
-    easyrtc.call(otherEasyrtcid, successCB, failureCB);
+    step3(call);
 }
 
+function end_call() {
+        window.existingCall.close();
+        step2();
+  
+}
 
-function loginSuccess(easyrtcid) {
-    selfEasyrtcid = easyrtcid;
- 	myid = easyrtc.cleanId(easyrtcid);   
+function show_my_video() {
+	constraints = { audio: true, video: true };
+    // Get audio/video stream
+    navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+        // Set your video displays
+        $('#my-video').prop('src', URL.createObjectURL(stream));
 
- 	if (i_am_caller) {
- 		console.log("Start Call Request Sent");
-    	socket.send(JSON.stringify({type: "start_video_call", content: room, talk_id: talk_id}))
+        window.localStream = stream;
+
+        mediaStream = stream;
+        mediaStream.stop = function () {
+            this.getAudioTracks().forEach(function (track) {
+                track.stop();
+            });
+            this.getVideoTracks().forEach(function (track) { //in case... :)
+                track.stop();
+            });
+        };
+	}).catch(function(err) {
+		console.log(err);
+    	//Toggle video close
+    	//enable_video();
+    	alert("ERROR: " + err.message);	
+	});
+}
+
+function hide_my_video() {
+    mediaStream.stop();
+}
+
+function step3(call) {
+    // Hang up on an existing call if present
+    if (window.existingCall) {
+        window.existingCall.close();
     }
-    $("#my-id").html(myid);
-}
+    // Wait for stream on the call, then set peer video display
+    call.on('stream', function(stream) {
+        console.log(stream);
+        $('#their-video').prop('src', URL.createObjectURL(stream));
+    });
 
-
-function loginFailure(errorCode, message) {
-    easyrtc.showError(errorCode, message);
+    // UI stuff
+    window.existingCall = call;
+    $('#their-id').text(call.peer);
+    call.on('close', step2);
 }

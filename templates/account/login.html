@@ -4,40 +4,24 @@
 
 {% block content %}
   
-  <div class="row">
-    <div class="col col-sm-4"></div>
-    <div class="col col-sm-4">
-      <h2>Log in to Doctur.org</h2>
-      <form method="post" class="form">
+<div class="signup colored-background">
+    <h1><span class="text__switcher">Login to your account</span></h1>
+    <p><span class="text__switcher">Type your credentials to access to your dashboard.</span></p>
+
+    <form method="post" class="form custom-form">
         {% csrf_token %}
         {% bootstrap_form form %}
-        {% buttons %}
-        <button type="submit" class="btn btn-primary">
-         Submit
-        </button>
+  
+        {% buttons %}      
+          <div class="form-group form-group--last" >
+            <button type="submit" class="center-box">
+              <span class="text__switcher">Log me in</span>
+            </button>
+          </div>
         {% endbuttons %}
-		<a href="{% url 'password_reset' %}">Forget Password?</a>
-      </form>
-    </div>
-    <div class="col col-sm-4"></div>
-  </div>
-  <!--<form method="post">
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{ next }}" />
-    {% for field in form %}
-      <p>
-        {{ field.label_tag }}<br>
-        {{ field }}<br>
-        {% for error in field.errors %}
-          <p style="color: red">{{ error }}</p>
-        {% endfor %}
-        {% if field.help_text %}
-          <p><small style="color: grey">{{ field.help_text }}</small></p>
-        {% endif %}
-      </p>
-    {% endfor %}
-    <button type="submit">Log in</button><br>
-	<a href="{% url 'signup' %}">Are you new to Doctur.org? Sign up</a>
-    <a href="{% url 'signup' %}">Are you new to Doctur.org? Sign up</a>
-  </form>-->
+    </form>
+
+    <p class="signup__signin">Forgot your password? <a href="{% url 'password_reset' %}">Reset password</a></p>
+</div>
+
 {% endblock %}
