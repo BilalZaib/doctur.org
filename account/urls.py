@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^profileedit/', views.edit_profile, name='edit_profile'),
     url(r'^settings/', views.setting, name='setting'),
     url(r'^password/$', views.change_password, name='change_password'),
+    url(r'^resend_email/$', views.email_Resend, name='resend_email'),
 
     url(r'^password_reset/$', auth_views.password_reset, name='password_reset'),
     url(r'^password_reset/done/$', auth_views.password_reset_done, name='password_reset_done'),

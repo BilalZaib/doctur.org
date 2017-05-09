@@ -34,21 +34,28 @@ def signup(request):
             elif userType == '2':
                 PatientProfile.objects.create(user=user)
 
-            current_site = get_current_site(request)
-            subject = 'Activate Your Doctur.org Account'
-            message = render_to_string('account/account_activation_email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': account_activation_token.make_token(user),
-            })
-            user.email_user(subject, message)
-
-            return redirect('account_activation_sent')
+            request.session['user_id'] = user.id
+            return send_Email(request)
     else:
         form = SignUpForm()
     return render(request, 'account/signup.html', {'form': form})
 
+def send_Email(request):
+    userid = request.session.get('user_id')
+    user = User.objects.get(pk=int(userid))
+    current_site = get_current_site(request)
+    subject = 'Activate Your Doctur.org Account'
+    message = render_to_string('account/account_activation_email.html', {
+        'user': user,
+        'domain': current_site.domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': account_activation_token.make_token(user),
+    })
+    user.email_user(subject, message)
+    return redirect('account_activation_sent')
+
+def email_Resend(request):
+    return send_Email(request)
 
 def account_activation_sent(request):
     return render(request, 'account/account_activation_sent.html')
