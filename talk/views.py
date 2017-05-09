@@ -13,7 +13,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 @login_required
 def index(request):
-    return render(request, 'dashboard/talk/index.html', {})
+    return render(request, 'dashboard/talk/index.html', {"user": request.user.id})
 
 @login_required
 def talk(request, talk_id):    
