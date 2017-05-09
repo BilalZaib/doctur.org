@@ -1,0 +1,27 @@
+
+{% extends 'front/base.html' %}
+{% load bootstrap3 %}
+
+{% block content %}
+  
+<div class="signup colored-background">
+    <h1><span class="text__switcher">Login to your account</span></h1>
+    <p><span class="text__switcher">Type your credentials to access to your dashboard.</span></p>
+
+    <form method="post" class="form custom-form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+  
+        {% buttons %}      
+          <div class="form-group form-group--last" >
+            <button type="submit" class="center-box">
+              <span class="text__switcher">Log me in</span>
+            </button>
+          </div>
+        {% endbuttons %}
+    </form>
+
+    <p class="signup__signin">Forgot your password? <a href="{% url 'password_reset' %}">Reset password</a></p>
+</div>
+
+{% endblock %}

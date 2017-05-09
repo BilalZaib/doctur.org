@@ -1,0 +1,25 @@
+{% extends 'dashboard/base.html' %}
+{% load bootstrap3 %}
+
+{% block content %}
+
+<div id="wrapper">
+	<div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+				  <div class="container">
+					<h2>Profile</h2>
+					<img src = "{{ user.patient.getimg }}" width = "50"></img>
+					<p><b>User Name</b>: {{user.username}}</p>
+					<p><b>Full Name</b>:{{user.get_full_name}}</p>
+					<p><b>Email</b>: {{user.email}}</p>
+					<p><b>You are from</b> {{ user.patient.address }}</p>
+					<p><b>Your Birth Date</b>: {{ user.patient.birth_date }}</p>
+					<p><b>Disease</b>: {{ user.patient.disease }}</p>
+				  </div>
+			</div>
+  		</div>
+  	</div>
+</div>
+
+{% endblock %}

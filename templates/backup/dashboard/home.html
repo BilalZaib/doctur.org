@@ -1,0 +1,16 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+<div id="wrapper">
+	<div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+  				<h2>Welcome, {{ user.get_full_name }} <small>{{ user.username }}</small>!</h2>
+				<h3><small>You are from </small>{{ user.patient.address }}</h3>
+				<h4><small>Your Birth Date : </small>{{ user.patient.birth_date }}</h4>
+  			</div>
+  		</div>
+  	</div>
+</div>
+{% endblock %}

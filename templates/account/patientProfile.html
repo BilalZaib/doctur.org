@@ -3,21 +3,20 @@
 
 {% block content %}
 
-  <div class="row">
-    <div class="col col-sm-4"></div>
-    <div class="col col-sm-4">
-      <h2>Patient Profile</h2>
-      <form method="post" class="form" enctype = "multipart/form-data">
+  <div class="signup colored-background">
+    <h1><span class="text__switcher">Patient Profile</span></h1>
+    <p><span class="text__switcher">Patient Profile Information</span></p>
+    <form method="post" class="form custom-form" enctype = "multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form form %}
-        {% buttons %}
-        <button type="submit" class="btn btn-primary">
-         Submit
-        </button>
+        {% buttons %}      
+          <div class="form-group form-group--last" >
+            <button type="submit" class="center-box">
+              <span class="text__switcher">Submit</span>
+            </button>
+          </div>
         {% endbuttons %}
-      </form>
-    </div>
-    <div class="col col-sm-4"></div>
-  </div>
+    </form>
+ </div>
 
 {% endblock %}

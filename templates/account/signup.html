@@ -3,21 +3,21 @@
 
 {% block content %}
 
-  <div class="row">
-    <div class="col col-sm-4"></div>
-    <div class="col col-sm-4">
-      <h2>Sign up</h2>
-      <form method="post" class="form">
+<div class="signup colored-background">
+    <h1><span class="text__switcher">Registeration</span></h1>
+    <p><span class="text__switcher">Type your credentials to access to your dashboard.</span></p>
+
+    <form method="post" class="form custom-form">
         {% csrf_token %}
         {% bootstrap_form form %}
-        {% buttons %}
-        <button type="submit" class="btn btn-primary">
-         Submit
-        </button>
+  
+        {% buttons %}      
+          <div class="form-group form-group--last" >
+            <button type="submit" class="center-box">
+              <span class="text__switcher">Create Account</span>
+            </button>
+          </div>
         {% endbuttons %}
-      </form>
-    </div>
-    <div class="col col-sm-4"></div>
-  </div>
-
+    </form>
+</div>
 {% endblock %}
