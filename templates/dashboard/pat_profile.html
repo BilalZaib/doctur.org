@@ -9,14 +9,13 @@
             <div class="row">
 				  <div class="container">
 					<h2>Profile</h2>
-					<img src = "{{ user.patient.getimg }}" width = "240"></img>
-					<p>{{user.patient.getimg}}</p>
-					<p>User Name : {{user.username}}</p>
-					<p>Full Name :{{user.get_full_name}}</p>
-					<p>Email : {{user.email}}</p>
-					<p>You are from {{ user.patient.address }}</p>
-					<p>Your Birth Date : {{ user.patient.birth_date }}</p>
-					<p>Disease : {{ user.patient.disease }}</p>
+					<img src = "{{ user.patient.getimg }}" width = "50"></img>
+					<p><b>User Name</b>: {{user.username}}</p>
+					<p><b>Full Name</b>:{{user.get_full_name}}</p>
+					<p><b>Email</b>: {{user.email}}</p>
+					<p><b>You are from</b> {{ user.patient.address }}</p>
+					<p><b>Your Birth Date</b>: {{ user.patient.birth_date }}</p>
+					<p><b>Disease</b>: {{ user.patient.disease }}</p>
 				  </div>
 			</div>
   		</div>

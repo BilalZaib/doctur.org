@@ -8,10 +8,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="">Dashboard</a>
+        <a class="navbar-brand" href="">Doctur.org Dashboard</a>
     </div>
+
     <!-- Top Menu Items -->
     <ul class="nav navbar-right top-nav">
+    
+    <!--
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
             <ul class="dropdown-menu message-dropdown">
@@ -22,7 +25,7 @@
                                 <img class="media-object" src="http://placehold.it/50x50" alt="">
                             </span>
                             <div class="media-body">
-                                <h5 class="media-heading"><strong>{{ user.get_full_name }} </strong>
+                                <h5 class="media-heading"><strong>{{ user.username }} </strong>
                                 </h5>
                                 <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
                                 <p>Lorem ipsum dolor sit amet, consectetur...</p>
@@ -65,7 +68,8 @@
                 </li>
             </ul>
         </li>
-        <li class="dropdown">
+        -->
+<!--        <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> <b class="caret"></b></a>
             <ul class="dropdown-menu alert-dropdown">
                 <li>
@@ -92,15 +96,18 @@
                 </li>
             </ul>
         </li>
+-->
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ user.get_full_name }}<b class="caret"></b></a>
             <ul class="dropdown-menu">
                 <li>
                     <a href="{% url 'profile' %}"><i class="fa fa-fw fa-user"></i> Profile</a>
                 </li>
+                <!--
                 <li>
                     <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
                 </li>
+                -->
                 <li>
                     <a href="{% url 'setting' %}"><i class="fa fa-fw fa-gear"></i> Settings</a>
                 </li>
@@ -114,15 +121,16 @@
     <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
-            <li class="active">
+            <li class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}">
                 <a href="/dashboard"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
             </li>
-            <li>
+            <li class="{% if request.resolver_match.url_name in 'directory' or request.resolver_match.url_name in 'talk' %}active{% endif %}">
                 <a href="/talk/directory"><i class="fa fa-fw fa-list"></i> Directory</a>
             </li>
-            <li>
+            <!--<li>
                 <a href="/talk/"><i class="fa fa-fw fa-comment"></i> Talk</a>
             </li>
+            -->
         </ul>
     </div>
     <!-- /.navbar-collapse -->

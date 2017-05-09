@@ -38,8 +38,17 @@ def talk(request, talk_id):
 
 @login_required
 def directory(request):
+    if hasattr(request.user, 'doctor'):
+        users = User.objects.filter(patient__email_confirmed=0)
+        usertype = "Patient"
+    else :
+        users = User.objects.filter(doctor__email_confirmed=0)
+        usertype = "Doctor"
+
     context = {
-        "user_list": User.objects.filter(~Q(pk=request.user.id)) 
+        "user": request.user.id,
+        "user_list": users,
+        "usertype": usertype
     }
     return render(request, 'dashboard/talk/directory.html', context)
 

@@ -51,7 +51,9 @@ def ws_message(message):
             
             result = json.dumps({
                 "type": "start_video_call",
-                "peerid": action['content']
+                "peerid": action['content'],
+                "callerid": message.user.id,
+                "callername": message.user.username,
             })
 
             # Send id to other user in talk

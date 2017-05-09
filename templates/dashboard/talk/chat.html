@@ -2,11 +2,10 @@
 
 {% block content %}
 
-<script src="/static/js/socket.io.js"></script>
-<script src="/static/js/easyrtc.js"></script>
-<script src="/static/js/chat.js"></script>  
+<!--<script src="/static/js/socket.io.js"></script>
+<script src="/static/js/easyrtc.js"></script>-->
+<script src="/static/js/peer.js"></script>
 <script>
-var user = '{{ user }}';
 var talk_id = {{ talk_id }};
 </script>
 
@@ -59,7 +58,7 @@ var talk_id = {{ talk_id }};
                                             <div class="row chat-msg right" id="current-user">
                                                 <div class="col col-lg-12">
                                                     <p><span id="msg" class="msg right-border">{{ message.content }}</span></p>
-                                                    <p class="msg-info"><b id="name">{{ message.user.username }}</b> - <span id="date">{{ message.timestamp }}</span></p>
+                                                    <p class="msg-info"><b id="their-name">{{ message.user.username }}</b> - <span id="date">{{ message.timestamp }}</span></p>
                                                 </div>                            
                                             </div>
                                         {% else %}
@@ -91,12 +90,13 @@ var talk_id = {{ talk_id }};
                     </div>
                 </div>
                 <div class="col video-area col-sm-12">
-                    <p>My ID: <span id="my-id">Loading...</span></p>
-                    <p>Their ID: <span id="their-id">Loading...</span></p>
+                    <p class="hidden">My ID: <span id="my-id">Loading...</span></p>
+                    <p class="hidden">Their ID: <span id="their-id">Loading...</span></p>
 
-                    <video autoplay="autoplay" id="my-video" muted="muted" volume="0" ></video>
-                    <video autoplay="autoplay" id="their-video"></video>
-
+                    <div style="display: block;">
+                        <video autoplay="autoplay" id="their-video"></video>
+                        <video autoplay="autoplay" id="my-video" muted="muted" volume="0" style="position: relative; bottom: 0; right: 0;" ></video>
+                    </div>
                 </div>
             </div>
             

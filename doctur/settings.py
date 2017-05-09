@@ -24,12 +24,13 @@ SECRET_KEY = 'fb#if-%e!j&1ykrnmt%^jis*=n9)v_l#8@a*=#a!96f#j-a8q5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.201']
-
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.201', '172.16.0.26']
 
 # Application definition
 
 INSTALLED_APPS = [
+    #'django.contrib.sites',
+    #'djstripe',
     'anymail',
     'account.apps.AccountConfig',
     'talk.apps.TalkConfig',
@@ -71,7 +72,6 @@ TEMPLATES = [
             ],
         },
     },
-
 ]
 
 WSGI_APPLICATION = 'doctur.wsgi.application'
@@ -86,7 +86,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -213,3 +212,25 @@ EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"  # or sendgrid.EmailBack
 DEFAULT_FROM_EMAIL = "web@doctur.org"  # if you don't already have this in settings
 
 LOGIN_REDIRECT_URL = '/dashboard'
+
+STRIPE_PUBLIC_KEY = os.environ.get("STRIPE_PUBLIC_KEY", "pk_test_5e8DM123AD9bvYFkCRNAPWx2")
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "sk_test_xP6oW1Rk6ZdTBZSDD46LIUbt")
+
+DJSTRIPE_PLANS = {
+    "monthly": {
+        "stripe_plan_id": "pro-monthly",
+        "name": "Web App Pro ($24.99/month)",
+        "description": "The monthly subscription plan to WebApp",
+        "price": 2499,  # $24.99
+        "currency": "usd",
+        "interval": "month"
+    },
+    "yearly": {
+        "stripe_plan_id": "pro-yearly",
+        "name": "Web App Pro ($199/year)",
+        "description": "The annual subscription plan to WebApp",
+        "price": 19900,  # $199.00
+        "currency": "usd",
+        "interval": "year"
+    }
+}

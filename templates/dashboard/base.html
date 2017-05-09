@@ -14,9 +14,13 @@
 
     <title>Dashboard</title>
 
+    {% bootstrap_javascript jquery=1 %} 
+
+
 	{% bootstrap_css %}
     <link href="{% static "css/chat.css" %}" rel="stylesheet">
     <link href="{% static "css/sb-admin.css" %}" rel="stylesheet">
+    <script src="/static/js/chat.js"></script>  
 
     <link href="{% static "font-awesome/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
 
@@ -30,8 +34,26 @@
 </head>
 
 	<body>
-	
-		{% bootstrap_javascript jquery=1 %}	
+	    <div class="modal fade" id="callModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="call-title"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <p id="call-message"></p>
+                        <div id="progress" class="hidden">
+                            <div class="progress-bar progress-bar-striped active" role="progressbar"
+                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                            0%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 		{% include 'dashboard/navigation.html' %}
 		{% block content %}{% endblock %}
 		

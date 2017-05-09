@@ -8,7 +8,42 @@ function moveToTalk(id) {
         window.location.href = "/talk/" + data;
     });
 }
+var user = '{{ user }}';
+
 </script>
+
+<script src="https://checkout.stripe.com/checkout.js"></script>
+
+<script>
+var handler = StripeCheckout.configure({
+  key: 'pk_test_5e8DM123AD9bvYFkCRNAPWx2',
+  image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+  locale: 'auto',
+  token: function(token) {
+    // You can access the token ID with `token.id`.
+    // Get the token ID to your server-side code for use.
+  }
+});
+
+$(document).ready(function() {
+    $(".pay").click(function(e) {
+      // Open Checkout with further options:
+      //handler.open({
+      //  name: 'Doctur.org',
+      //  description: 'Doctor consultation fees.',
+      //  amount: 500
+      //});
+      //e.preventDefault();
+
+    });
+
+    // Close Checkout on page navigation:
+    window.addEventListener('popstate', function() {
+      handler.close();
+    });
+});
+</script>
+
 <div id="wrapper">
 	<div id="page-wrapper">
 
@@ -16,12 +51,20 @@ function moveToTalk(id) {
 
             <div class="row">
                 <div class="col-lg-12">
-                    <h3>Doctor Directory</h3>
+                    <h3>{{usertype}} Directory</h3>
                 </div>
                 <div class="col-lg-12">
-                    <ul>
+                    <div class="row"> 
                         {% for user in user_list %}
-                        <li><a href="#" onclick="moveToTalk({{ user.id }})">{{ user.username }}</a></li>
+                        <div class="col col-sm-3 center doctor-item">
+                            {% if usertype == "Doctor" %}
+                                <img src = "{{ user.patient.getimg }}" width = "50"></img><br />
+                            {% else %}
+                                <img src = "{{ user.doctor.getimg }}" width = "50"></img><br />
+                            {% endif %}
+                            <p>{{user.get_full_name}}</p>
+                            <a href="#" class="pay btn btn-primary" onclick="moveToTalk({{ user.id }})">Consult Me</a>
+                        </div>
                         {% endfor %}
                     </ul>
                 </div>

@@ -27,5 +27,6 @@ urlpatterns = [
     url(r'^robots.txt', views.robots),
     url(r'^admin/', admin.site.urls),
     url(r'^account/', include('account.urls')),
+    #url(r'^payments/', include('djstripe.urls', namespace="djstripe")),
     url(r'^', include('front.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
